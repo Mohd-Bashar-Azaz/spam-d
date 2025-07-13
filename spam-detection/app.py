@@ -10,8 +10,6 @@ import re
 import subprocess
 import io
 import time
-import sys
-import traceback
 
 # Model Names 
 SMS_MODEL_NAME = './spam_sms_model.pkl'
@@ -20,127 +18,34 @@ EMAIL_MODEL_NAME = './spam_email_model.pkl'
 st.set_page_config(page_title='Spam Detection System', layout='wide')
 st.title('🛡️ Spam Detection System')
 
-# --- Test and Train Models Section ---
-col1, col2 = st.columns(2)
-
-with col1:
-    if st.button('🧪 Test Training Environment'):
-        with st.spinner('Testing training environment...'):
-            try:
-                # Get the current directory
-                current_dir = os.path.dirname(os.path.abspath(__file__))
+# --- Train Models Button ---
+if st.button('🔄 Train/Re-train Both Models'):
+    with st.spinner('Training both SMS and Email models...'):
+        try:
+            result = subprocess.run(['python', 'train_model.py'], capture_output=True, text=True, cwd=os.path.dirname(__file__) or '.')
+            if result.returncode == 0:
+                st.success('✅ Both models trained successfully!')
+                st.text(result.stdout)
                 
-                # Run the test script
-                result = subprocess.run(
-                    [sys.executable, 'test_training.py'], 
-                    capture_output=True, 
-                    text=True, 
-                    cwd=current_dir,
-                    timeout=120  # 2 minute timeout
-                )
+                # Countdown timer for page reload
+                countdown_placeholder = st.empty()
                 
-                st.subheader("🧪 Test Results:")
-                if result.stdout:
-                    st.text("STDOUT:")
-                    st.code(result.stdout)
+                for i in range(5, 0, -1):
+                    countdown_placeholder.write(f"⏰ **Reloading in {i} seconds...**")
+                    time.sleep(1)
                 
-                if result.stderr:
-                    st.text("STDERR:")
-                    st.code(result.stderr)
+                countdown_placeholder.write("🚀 **Reloading now...**")
+                time.sleep(0.5)
                 
-                if result.returncode == 0:
-                    st.success("✅ Environment test completed!")
-                else:
-                    st.error(f"❌ Environment test failed with return code: {result.returncode}")
-                    
-            except subprocess.TimeoutExpired:
-                st.error("❌ Environment test timed out!")
-            except FileNotFoundError:
-                st.error("❌ Test script not found!")
-            except Exception as e:
-                st.error(f'❌ Error during testing: {e}')
-                st.code(traceback.format_exc())
-
-with col2:
-    if st.button('🔄 Train/Re-train Both Models'):
-        with st.spinner('Training both SMS and Email models...'):
-            try:
-                # Get the current directory
-                current_dir = os.path.dirname(os.path.abspath(__file__))
-                st.info(f"Training from directory: {current_dir}")
+                # Reload the page
+                st.rerun()
                 
-                # Check if data files exist
-                sms_data_path = os.path.join(current_dir, 'data', 'spam_sms.csv')
-                email_data_path = os.path.join(current_dir, 'data', 'spam_email.csv')
-                
-                if not os.path.exists(sms_data_path):
-                    st.error(f"❌ SMS data file not found at: {sms_data_path}")
-                    st.stop()
-                
-                if not os.path.exists(email_data_path):
-                    st.error(f"❌ Email data file not found at: {email_data_path}")
-                    st.stop()
-                
-                st.success("✅ Data files found, starting training...")
-                
-                # Run the training script
-                result = subprocess.run(
-                    [sys.executable, 'train_model.py'], 
-                    capture_output=True, 
-                    text=True, 
-                    cwd=current_dir,
-                    timeout=300  # 5 minute timeout
-                )
-                
-                # Display training output
-                st.subheader("📊 Training Output:")
-                if result.stdout:
-                    st.text("STDOUT:")
-                    st.code(result.stdout)
-                
-                if result.stderr:
-                    st.text("STDERR:")
-                    st.code(result.stderr)
-                
-                if result.returncode == 0:
-                    st.success('✅ Training completed successfully!')
-                    
-                    # Check if models were created
-                    sms_model_path = os.path.join(current_dir, 'spam_sms_model.pkl')
-                    email_model_path = os.path.join(current_dir, 'spam_email_model.pkl')
-                    
-                    if os.path.exists(sms_model_path) and os.path.exists(email_model_path):
-                        st.success("✅ Model files created successfully!")
-                        
-                        # Countdown timer for page reload
-                        countdown_placeholder = st.empty()
-                        
-                        for i in range(5, 0, -1):
-                            countdown_placeholder.write(f"⏰ **Reloading in {i} seconds...**")
-                            time.sleep(1)
-                        
-                        countdown_placeholder.write("🚀 **Reloading now...**")
-                        time.sleep(0.5)
-                        
-                        # Reload the page
-                        st.rerun()
-                    else:
-                        st.error("❌ Model files not found after training!")
-                        if not os.path.exists(sms_model_path):
-                            st.error(f"SMS model not found at: {sms_model_path}")
-                        if not os.path.exists(email_model_path):
-                            st.error(f"Email model not found at: {email_model_path}")
-                else:
-                    st.error(f'❌ Training failed with return code: {result.returncode}')
-                    
-            except subprocess.TimeoutExpired:
-                st.error("❌ Training timed out after 5 minutes!")
-            except FileNotFoundError:
-                st.error("❌ Python executable not found! Please ensure Python is properly installed.")
-            except Exception as e:
-                st.error(f'❌ Error during training: {e}')
-                st.code(traceback.format_exc())
-        st.stop()
+            else:
+                st.error('❌ Training failed!')
+                st.text(result.stderr)
+        except Exception as e:
+            st.error(f'❌ Error during training: {e}')
+    st.stop()
 
 # Check if models exist
 sms_model_exists = os.path.exists(SMS_MODEL_NAME)
