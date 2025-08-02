@@ -16,7 +16,16 @@ SMS_MODEL_NAME = './spam_sms_model.pkl'
 EMAIL_MODEL_NAME = './spam_email_model.pkl'
 
 st.set_page_config(page_title='Spam Detection System', layout='wide')
-st.title('🛡️ Spam Detection System')
+
+# ===== Custom Header =====
+col_title = st.columns([1])
+with col_title[0]:
+    st.markdown("""
+    <h1 style='font-size: 60px; margin-bottom:0; color:white; text-align:center;'>🛡️ SPAM DETECTION SYSTEM</h1>
+    <p style='font-size: 24px; color:white; margin-top:0; text-align:center;'>AI-powered SMS & Email Spam Classifier</p>
+    """, unsafe_allow_html=True)
+
+st.markdown("---")
 
 # --- Train Models Button ---
 if st.button('🔄 Train/Re-train Both Models'):
@@ -549,94 +558,87 @@ with tab3:
         except Exception as e:
             st.error(f"Error reading CSV file: {e}")
 
-# Add information about the model
+# ===== Sidebar Polishing =====
 with st.sidebar:
     st.header("☁️ Cloud9")
-    st.markdown("🛡️**Spam Detection System**")
+    st.markdown("🛡️ **Spam Detection System**")
     st.markdown("---")
     
-    # Project Description
+    with st.expander("🚦 Quick Guide", expanded=True):
+        st.markdown("""
+        1. **Choose a feature tab** (SMS, Email, or CSV Batch)
+        2. **Enter or upload your message(s)**
+        3. **View prediction and confidence**
+        4. **[Optional] Download results as CSV**
+        5. **[Optional] Add new labeled data to improve the model**
+        """)
+    
     with st.expander("📋 About Project"):
         st.write("Cloud9 is an intelligent spam detection system that uses machine learning to identify and classify spam messages in both SMS and email communications. Built with state-of-the-art NLP techniques and TF-IDF vectorization.")
     
-    # Features Section
     with st.expander("🚀 Key Features"):
-        st.write("**📱 SMS Detection:**")
-        st.write("• Real-time SMS spam analysis")
-        st.write("• TF-IDF based text processing")
-        st.write("• High accuracy classification")
-        st.write("• Confidence scoring")
-        
-        st.write("**📧 Email Detection:**")
-        st.write("• Multi-column email analysis")
-        st.write("• Header and body processing")
-        st.write("• Spam pattern recognition")
-        st.write("• Professional email filtering")
-        
-        st.write("**📁 Batch Processing:**")
-        st.write("• CSV file upload support")
-        st.write("• Bulk message analysis")
-        st.write("• Results export functionality")
-        st.write("• Progress tracking")
-        
-        st.write("**🔧 Advanced Features:**")
-        st.write("• Dual model architecture")
-        st.write("• Real-time model training")
-        st.write("• Test data integration")
-        st.write("• Professional UI/UX")
+        st.write("**📱 SMS Detection:** Real-time analysis, TF-IDF, high accuracy, confidence scoring")
+        st.write("**📧 Email Detection:** Multi-column, header/body, spam pattern recognition")
+        st.write("**📁 Batch Processing:** CSV upload, bulk analysis, export, progress tracking")
+        st.write("**🔧 Advanced:** Dual models, real-time training, test data integration, pro UI/UX")
     
-    # Team Members Section
     with st.expander("👥 Team Members"):
         st.write("**Group Name:** Cloud9")
-        st.write("**Project:** Spam Detection")
         st.write("**Team Lead:** Mohd Bashar Azaz (AIIUL135)")
-        st.write("")
-        st.write("**Group Members:**")
-        st.write("1. Mohd Hamza (AIIUL137)")
-        st.write("2. Mohd Haris (AIIUL138)")
-        st.write("3. Mohd Tariq Khan (AIIUL153)")
-        st.write("4. Mohd Salman (AIIUL147)")
-        st.write("5. Mohd Zeeshan (AIIUL160)")
-        st.write("6. Mohd Kamran (AIIUL142)")
-        st.write("7. Mohd Bashar Azaz (AIIUL135) - Team Lead")
-        st.write("8. Mohd Asadullah Siddiqui (AIIUL132)")
-        st.write("9. Mohd Sulaiman Warsi (AIIUL152)")
-        st.write("10. Mohd Armaan Khan (AIIUL130)")
+        st.write("**Members:** Mohd Hamza, Mohd Haris, Mohd Tariq Khan, Mohd Salman, Mohd Zeeshan, Mohd Kamran, Mohd Asadullah Siddiqui, Mohd Sulaiman Warsi, Mohd Armaan Khan")
     
-    # Technical Details
     with st.expander("⚙️ Technical Stack"):
-        st.write("**Frontend:** Streamlit")
-        st.write("**Backend:** Python")
-        st.write("**ML Framework:** Scikit-learn")
-        st.write("**Models:** Multinomial Naive Bayes")
-        st.write("**Vectorization:** TF-IDF")
-        st.write("**Data Processing:** Pandas")
+        st.write("**Frontend:** Streamlit\n**Backend:** Python\n**ML:** Scikit-learn (MultinomialNB, TF-IDF)\n**Data:** Pandas")
     
-    # Model Information
     with st.expander("📈 Model Details"):
         st.write(f"**SMS Model:** {SMS_MODEL_NAME}")
         st.write(f"**Email Model:** {EMAIL_MODEL_NAME}")
-        st.write("**Algorithm:** Multinomial Naive Bayes")
-        st.write("**Features:** TF-IDF vectorization")
-        st.write("**Training Data:** SMS & Email datasets")
+        st.write("**Algorithm:** Multinomial Naive Bayes\n**Features:** TF-IDF vectorization\n**Training Data:** SMS & Email datasets")
     
-    # How it Works
     with st.expander("🔧 How It Works"):
-        st.write("1. **Input:** Enter SMS or email content")
-        st.write("2. **Processing:** System analyzes with appropriate model")
-        st.write("3. **Classification:** Returns spam/legitimate prediction")
-        st.write("4. **Confidence:** Shows probability scores")
-        st.write("5. **Export:** Download results as CSV")
+        st.write("1. Input message(s)\n2. System analyzes with model\n3. Returns spam/legitimate\n4. Shows probability\n5. Export as CSV")
     
-    # CSV Processing Info
-    with st.expander("📁 CSV Processing"):
-        st.write("• Upload CSV files for batch processing")
-        st.write("• Select columns for email analysis")
-        st.write("• Download results as CSV")
-        st.write("• Progress tracking and statistics")
-    
-    # Version Info
+    st.markdown("---")
+    st.header("📤 Add Labeled Data & Retrain")
+    st.write("Upload new labeled data to improve the model. The data will be appended to the training set and the model will be retrained.")
+    retrain_file_type = st.selectbox("Select data type to add:", ["SMS", "Email"], key="retrain_file_type")
+    retrain_file = st.file_uploader("Upload labeled CSV (same columns as training data)", type=["csv"], key="retrain_file")
+    if retrain_file is not None:
+        st.info("**Note:** Uploaded data must be labeled and match the training columns. Retraining may take a moment.")
+        if st.button("✅ Append & Retrain Model", key="append_retrain_btn"):
+            try:
+                if retrain_file_type == "SMS":
+                    train_path = os.path.join("data", "spam_sms.csv")
+                    expected_cols = ["label", "text"]
+                else:
+                    train_path = os.path.join("data", "spam_email.csv")
+                    expected_cols = ["Category", "Message"]
+                new_df = pd.read_csv(retrain_file)
+                if list(new_df.columns) != expected_cols:
+                    st.error(f"Uploaded CSV must have columns: {expected_cols}")
+                else:
+                    orig_df = pd.read_csv(train_path)
+                    combined_df = pd.concat([orig_df, new_df], ignore_index=True)
+                    combined_df.to_csv(train_path, index=False)
+                    st.success(f"✅ Data appended to {train_path}. Retraining model...")
+                    with st.spinner("Retraining model. Please wait..."):
+                        result = subprocess.run(['python', 'train_model.py'], capture_output=True, text=True, cwd=os.path.dirname(__file__) or '.')
+                        if result.returncode == 0:
+                            st.success('✅ Model retrained successfully!')
+                            st.text(result.stdout)
+                            st.info("Please reload the page to use the updated model.")
+                        else:
+                            st.error('❌ Retraining failed!')
+                            st.text(result.stderr)
+            except Exception as e:
+                st.error(f"Error during append/retrain: {e}")
     st.markdown("---")
     st.write("**Version:** Cloud9-SpamShield-v1.0.0")
     st.write("**Last Updated:** July 2025")
     st.write("**License:** Cloud9 Development Team")
+    st.markdown("<hr style='border:1px solid #eee;'>", unsafe_allow_html=True)
+    st.markdown("<center><small>Made with ❤️ by Cloud9 Team</small></center>", unsafe_allow_html=True)
+
+# ===== Footer =====
+st.markdown("<hr style='border:1px solid #eee;'>", unsafe_allow_html=True)
+st.markdown("<center><small>Cloud9 Spam Detection System &copy; 2025 | All rights reserved.</small></center>", unsafe_allow_html=True)
