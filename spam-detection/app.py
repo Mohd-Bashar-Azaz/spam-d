@@ -21,8 +21,8 @@ st.set_page_config(page_title='Spam Detection System', layout='wide')
 col_title = st.columns([1])
 with col_title[0]:
     st.markdown("""
-    <h1 style='font-size: 60px; margin-bottom:0; color:white; text-align:center;'>🛡️ SPAM DETECTION SYSTEM</h1>
-    <p style='font-size: 24px; color:white; margin-top:0; text-align:center;'>AI-powered SMS & Email Spam Classifier</p>
+    <h1 style='font-size: 60px; margin-bottom:0; color:red; text-align:center;'>🛡️ SPAM DETECTION SYSTEM</h1>
+    <p style='font-size: 24px; color:red; margin-top:0; text-align:center;'>AI-powered SMS & Email Spam Classifier</p>
     """, unsafe_allow_html=True)
 
 st.markdown("---")
