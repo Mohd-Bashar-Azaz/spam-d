@@ -10,6 +10,14 @@ import re
 import io
 import time
 
+# Debug: Show deployment environment info
+st.write("**🔍 Debug Info:**")
+st.write(f"Current working directory: `{os.getcwd()}`")
+st.write(f"Script location: `{os.path.dirname(os.path.abspath(__file__))}`")
+st.write(f"Files in current directory:")
+for f in os.listdir('.'):
+    st.write(f"- {f}")
+
 # Model Names - Deployment-ready paths
 import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -30,6 +38,11 @@ def get_model_path(model_name):
 
 SMS_MODEL_NAME = get_model_path('spam_sms_model.pkl')
 EMAIL_MODEL_NAME = get_model_path('spam_email_model.pkl')
+
+st.write(f"Looking for SMS model at: `{SMS_MODEL_NAME}`")
+st.write(f"Looking for Email model at: `{EMAIL_MODEL_NAME}`")
+st.write(f"SMS model exists: {os.path.exists(SMS_MODEL_NAME)}")
+st.write(f"Email model exists: {os.path.exists(EMAIL_MODEL_NAME)}")
 
 st.set_page_config(page_title='Spam Detection System', layout='wide')
 
