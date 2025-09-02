@@ -27,6 +27,21 @@ def get_model_path(model_name):
             return path
     return model_name  # Fallback to original name
 
+# Try multiple possible locations for data files
+def get_data_path(filename):
+    possible_paths = [
+        os.path.join(script_dir, 'data', filename),  # data folder next to app.py
+        os.path.join('data', filename),  # data folder in current directory
+        os.path.join('.', 'data', filename),  # explicit current directory
+        os.path.join('spam-detection', 'data', filename),  # subfolder structure
+        os.path.join('..', 'data', filename)  # parent directory
+    ]
+    
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+    return os.path.join('data', filename)  # Fallback
+
 SMS_MODEL_NAME = get_model_path('spam_sms_model.pkl')
 EMAIL_MODEL_NAME = get_model_path('spam_email_model.pkl')
 
@@ -382,7 +397,7 @@ with tab3:
         st.write("Contains 5 sample SMS messages (mix of spam and legitimate)")
         if st.button("📥 Load Test SMS File", key="load_test_sms"):
             try:
-                test_sms_path = os.path.join('data', 'test_sms.csv')
+                test_sms_path = get_data_path('test_sms.csv')
                 if os.path.exists(test_sms_path):
                     with open(test_sms_path, 'r', encoding='utf-8') as f:
                         test_sms_content = f.read()
@@ -410,7 +425,7 @@ with tab3:
         st.write("Contains 5 sample emails (mix of spam and legitimate)")
         if st.button("📥 Load Test Email File", key="load_test_email"):
             try:
-                test_email_path = os.path.join('data', 'test_email.csv')
+                test_email_path = get_data_path('test_email.csv')
                 if os.path.exists(test_email_path):
                     with open(test_email_path, 'r', encoding='utf-8') as f:
                         test_email_content = f.read()
