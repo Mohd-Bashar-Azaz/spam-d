@@ -48,7 +48,7 @@ sms_model_exists = os.path.exists(SMS_MODEL_NAME)
 email_model_exists = os.path.exists(EMAIL_MODEL_NAME)
 
 if not sms_model_exists:
-    st.error("❌ SMS model not found! Please ensure 'spam_sms_model.pkl' is in the app directory.")
+    st.error("❌q SMS model not found! Please ensure 'spam_sms_model.pkl' is in the app directory.")
     st.info("💡 **For developers:** Make sure to include the pre-trained model files in your deployment.")
     st.stop()
 if not email_model_exists:
