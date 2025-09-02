@@ -7,7 +7,6 @@ from sklearn.pipeline import make_pipeline
 import joblib
 import os
 import re
-import subprocess
 import io
 import time
 
@@ -27,53 +26,27 @@ with col_title[0]:
 
 st.markdown("---")
 
-# --- Train Models Button ---
-if st.button('🔄 Train/Re-train Both Models'):
-    with st.spinner('Training both SMS and Email models...'):
-        try:
-            result = subprocess.run(['python', 'train_model.py'], capture_output=True, text=True, cwd=os.path.dirname(__file__) or '.')
-            if result.returncode == 0:
-                st.success('✅ Both models trained successfully!')
-                st.text(result.stdout)
-                
-                # Countdown timer for page reload
-                countdown_placeholder = st.empty()
-                
-                for i in range(5, 0, -1):
-                    countdown_placeholder.write(f"⏰ **Reloading in {i} seconds...**")
-                    time.sleep(1)
-                
-                countdown_placeholder.write("🚀 **Reloading now...**")
-                time.sleep(0.5)
-                
-                # Reload the page
-                st.rerun()
-                
-            else:
-                st.error('❌ Training failed!')
-                st.text(result.stderr)
-        except Exception as e:
-            st.error(f'❌ Error during training: {e}')
-    st.stop()
-
-# Check if models exist
+# Check if models exist and load them
 sms_model_exists = os.path.exists(SMS_MODEL_NAME)
 email_model_exists = os.path.exists(EMAIL_MODEL_NAME)
 
 if not sms_model_exists:
-    st.error("SMS model not found! Please train the SMS model first using the training script.")
+    st.error("❌ SMS model not found! Please ensure 'spam_sms_model.pkl' is in the app directory.")
+    st.info("💡 **For developers:** Make sure to include the pre-trained model files in your deployment.")
     st.stop()
 if not email_model_exists:
-    st.error("Email model not found! Please train the email model first using the training script.")
+    st.error("❌ Email model not found! Please ensure 'spam_email_model.pkl' is in the app directory.")
+    st.info("💡 **For developers:** Make sure to include the pre-trained model files in your deployment.")
     st.stop()
 
 # Load the trained models
 try:
     sms_model = joblib.load(SMS_MODEL_NAME)
     email_model = joblib.load(EMAIL_MODEL_NAME)
-    st.success("✅ Models loaded successfully!")
+    st.success("✅ Pre-trained models loaded successfully!")
 except Exception as e:
-    st.error(f"Error loading models: {e}")
+    st.error(f"❌ Error loading models: {e}")
+    st.info("💡 **For developers:** Ensure model files are compatible with the current scikit-learn version.")
     st.stop()
 
 # Function to extract email content
