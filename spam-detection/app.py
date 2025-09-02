@@ -10,16 +10,7 @@ import re
 import io
 import time
 
-# Debug: Show deployment environment info
-st.write("**🔍 Debug Info:**")
-st.write(f"Current working directory: `{os.getcwd()}`")
-st.write(f"Script location: `{os.path.dirname(os.path.abspath(__file__))}`")
-st.write(f"Files in current directory:")
-for f in os.listdir('.'):
-    st.write(f"- {f}")
-
 # Model Names - Deployment-ready paths
-import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Try multiple possible locations for models
@@ -39,11 +30,6 @@ def get_model_path(model_name):
 SMS_MODEL_NAME = get_model_path('spam_sms_model.pkl')
 EMAIL_MODEL_NAME = get_model_path('spam_email_model.pkl')
 
-st.write(f"Looking for SMS model at: `{SMS_MODEL_NAME}`")
-st.write(f"Looking for Email model at: `{EMAIL_MODEL_NAME}`")
-st.write(f"SMS model exists: {os.path.exists(SMS_MODEL_NAME)}")
-st.write(f"Email model exists: {os.path.exists(EMAIL_MODEL_NAME)}")
-
 st.set_page_config(page_title='Spam Detection System', layout='wide')
 
 # ===== Custom Header =====
@@ -61,22 +47,18 @@ sms_model_exists = os.path.exists(SMS_MODEL_NAME)
 email_model_exists = os.path.exists(EMAIL_MODEL_NAME)
 
 if not sms_model_exists:
-    st.error("❌q SMS model not found! Please ensure 'spam_sms_model.pkl' is in the app directory.")
-    st.info("💡 **For developers:** Make sure to include the pre-trained model files in your deployment.")
+    st.error("❌ SMS model not found! Please ensure 'spam_sms_model.pkl' is in the app directory.")
     st.stop()
 if not email_model_exists:
     st.error("❌ Email model not found! Please ensure 'spam_email_model.pkl' is in the app directory.")
-    st.info("💡 **For developers:** Make sure to include the pre-trained model files in your deployment.")
     st.stop()
 
 # Load the trained models
 try:
     sms_model = joblib.load(SMS_MODEL_NAME)
     email_model = joblib.load(EMAIL_MODEL_NAME)
-    st.success("✅ Pre-trained models loaded successfully!")
 except Exception as e:
     st.error(f"❌ Error loading models: {e}")
-    st.info("💡 **For developers:** Ensure model files are compatible with the current scikit-learn version.")
     st.stop()
 
 # Function to extract email content
@@ -116,7 +98,6 @@ def process_csv_file(uploaded_file, file_type, selected_columns=None):
         # Method 1: Standard CSV reading
         try:
             df = pd.read_csv(uploaded_file)
-            st.success("CSV read successfully with standard method")
         except Exception as e:
             error_messages.append(f"Standard method failed: {str(e)}")
         
@@ -125,7 +106,6 @@ def process_csv_file(uploaded_file, file_type, selected_columns=None):
             try:
                 uploaded_file.seek(0)  # Reset file pointer
                 df = pd.read_csv(uploaded_file, encoding='utf-8')
-                st.success("CSV read successfully with UTF-8 encoding")
             except Exception as e:
                 error_messages.append(f"UTF-8 method failed: {str(e)}")
         
@@ -134,7 +114,6 @@ def process_csv_file(uploaded_file, file_type, selected_columns=None):
             try:
                 uploaded_file.seek(0)
                 df = pd.read_csv(uploaded_file, sep=',', engine='python')
-                st.success("CSV read successfully with Python engine")
             except Exception as e:
                 error_messages.append(f"Python engine method failed: {str(e)}")
         
@@ -169,7 +148,6 @@ def process_csv_file(uploaded_file, file_type, selected_columns=None):
                             data.append(row)
                 
                 df = pd.DataFrame(data, columns=header)
-                st.success("CSV read successfully with manual parsing")
                 
             except Exception as e:
                 error_messages.append(f"Manual parsing failed: {str(e)}")
@@ -405,7 +383,6 @@ with tab3:
         if st.button("📥 Load Test SMS File", key="load_test_sms"):
             try:
                 test_sms_path = os.path.join('data', 'test_sms.csv')
-                st.write(f"Looking for file at: {test_sms_path}")
                 if os.path.exists(test_sms_path):
                     with open(test_sms_path, 'r', encoding='utf-8') as f:
                         test_sms_content = f.read()
@@ -434,7 +411,6 @@ with tab3:
         if st.button("📥 Load Test Email File", key="load_test_email"):
             try:
                 test_email_path = os.path.join('data', 'test_email.csv')
-                st.write(f"Looking for file at: {test_email_path}")
                 if os.path.exists(test_email_path):
                     with open(test_email_path, 'r', encoding='utf-8') as f:
                         test_email_content = f.read()
