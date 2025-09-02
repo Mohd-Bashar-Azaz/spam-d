@@ -39,11 +39,6 @@ def get_model_path(model_name):
 SMS_MODEL_NAME = get_model_path('spam_sms_model.pkl')
 EMAIL_MODEL_NAME = get_model_path('spam_email_model.pkl')
 
-st.write(f"Looking for SMS model at: `{SMS_MODEL_NAME}`")
-st.write(f"Looking for Email model at: `{EMAIL_MODEL_NAME}`")
-st.write(f"SMS model exists: {os.path.exists(SMS_MODEL_NAME)}")
-st.write(f"Email model exists: {os.path.exists(EMAIL_MODEL_NAME)}")
-
 st.set_page_config(page_title='Spam Detection System', layout='wide')
 
 # ===== Custom Header =====
