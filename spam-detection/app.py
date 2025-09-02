@@ -10,9 +10,26 @@ import re
 import io
 import time
 
-# Model Names 
-SMS_MODEL_NAME = './spam_sms_model.pkl'
-EMAIL_MODEL_NAME = './spam_email_model.pkl'
+# Model Names - Deployment-ready paths
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Try multiple possible locations for models
+def get_model_path(model_name):
+    possible_paths = [
+        os.path.join(script_dir, model_name),  # Same directory as app.py
+        model_name,  # Current working directory
+        os.path.join('.', model_name),  # Explicit current directory
+        os.path.join('spam-detection', model_name)  # Subfolder
+    ]
+    
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+    return model_name  # Fallback to original name
+
+SMS_MODEL_NAME = get_model_path('spam_sms_model.pkl')
+EMAIL_MODEL_NAME = get_model_path('spam_email_model.pkl')
 
 st.set_page_config(page_title='Spam Detection System', layout='wide')
 
