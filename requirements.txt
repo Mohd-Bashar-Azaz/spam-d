@@ -1,6 +1,6 @@
 numpy 
 pandas
-scikit-learn
+scikit-learn==1.7.0
 joblib
 streamlit>=1.32
 altair>=5
